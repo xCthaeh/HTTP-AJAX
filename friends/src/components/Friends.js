@@ -10,6 +10,7 @@ export default class Friends extends React.Component {
       name: "",
       age: null,
       email: "",
+      phone: null,
       id: null,
       update: false
     };
@@ -30,7 +31,8 @@ export default class Friends extends React.Component {
       .post("http://localhost:5000/friends", {
         name: this.state.name,
         age: this.state.age,
-        email: this.state.email
+        email: this.state.email,
+        phone: this.state.phone
       })
       .then(res => {
         this.setState({ friends: res.data });
@@ -42,16 +44,24 @@ export default class Friends extends React.Component {
       .put(`http://localhost:5000/friends/${this.state.id}`, {
         name: this.state.name,
         age: this.state.age,
-        email: this.state.email
+        email: this.state.email,
+        phone: this.state.phone
       })
       .then(res => {
         this.setState({ friends: res.data });
       })
       .catch(err => console.log(err));
-    this.setState({ update: false, name: "", age: "", email: "" });
+    this.setState({ update: false, name: "", age: "", email: "", phone: "" });
   };
   setUpdate = (e, ids) => {
-    this.setState({ update: true, id: ids, name: "", age: "", email: "" });
+    this.setState({
+      update: true,
+      id: ids,
+      name: "",
+      age: "",
+      email: "",
+      phone: ""
+    });
   };
   delete = (e, ids) => {
     this.setState({ id: ids });
@@ -79,6 +89,13 @@ export default class Friends extends React.Component {
       email: e.target.value
     });
   };
+  phone = e => {
+    if (typeof e.target.value !== "number") {
+      this.setState({
+        phone: e.target.value
+      });
+    }
+  };
   render() {
     return (
       <>
@@ -88,10 +105,10 @@ export default class Friends extends React.Component {
               return (
                 <div key={e.id} className="people">
                   <div>
-                    {e.name}, {e.age}, {e.email}
+                    {e.name}, {e.age}, {e.email}, {e.phone}
                   </div>
                   <span className="edit" onClick={x => this.setUpdate(x, e.id)}>
-                    edit
+                    Edit
                   </span>
                   <span onClick={x => this.delete(x, e.id)}>&times;</span>
                 </div>
@@ -119,6 +136,12 @@ export default class Friends extends React.Component {
                 value={this.state.email}
                 placeholder="Email"
               />
+              <input
+                type="number"
+                onChange={this.phone}
+                value={this.state.phone}
+                placeholder="Phone"
+              />
               <button onClick={this.submit} onSubmit={this.submit}>
                 Submit
               </button>
@@ -145,6 +168,12 @@ export default class Friends extends React.Component {
                   onChange={this.email}
                   value={this.state.email}
                   placeholder="Email"
+                />
+                <input
+                  type="number"
+                  onChange={this.phone}
+                  value={this.state.phone}
+                  placeholder="Phone"
                 />
                 <button onClick={this.update} onSubmit={this.update}>
                   Update
